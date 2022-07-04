@@ -5,7 +5,11 @@ export const csvFilterCalculator = (invoice: string[]): string[] | string => {
     const igicField = invoiceValues[5];
     const cifField = invoiceValues[7];
     const nifField = invoiceValues[8];
-    if (ivaField && igicField || (cifField && nifField)) {
+    const totalAmount = Number(invoiceValues[3]);
+    const amountWithoutTaxes = Number(invoiceValues[2])
+
+    const totalAmountCalculatedWithIva = amountWithoutTaxes + (Number(amountWithoutTaxes) * Number(ivaField) / 100);
+    if (ivaField && igicField || (cifField && nifField) || (totalAmount !== totalAmountCalculatedWithIva)) {
       return invoice[0];
     }
     return invoice;

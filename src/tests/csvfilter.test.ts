@@ -11,7 +11,7 @@ import { csvFilterCalculator } from '../core/csvFilter';
 
 
 describe('CSV filter', () => {
-  const header = 'Invoice_number, Date, Total_Amount, Amount, IVA, IGIC, Concept, CIF_client, NIF_client';  
+  const header = 'Invoice_number, Date, Amount, Total_Amount, IVA, IGIC, Concept, CIF_client, NIF_client';  
   const invoice_1 = '1,02/05/2019,1000,1190,19,,ACER Laptop,B76430134,';
   const invoiceWithBothTaxes = '1,02/05/2019,1000,1190,19,7,ACER Laptop,B76430134,';
   const invoiceWithNifAndCif = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,76430134B';
