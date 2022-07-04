@@ -3,7 +3,9 @@ export const csvFilterCalculator = (invoice: string[]): string[] | string => {
     const invoiceValues = invoice[1].split(',');
     const ivaField = invoiceValues[4];
     const igicField = invoiceValues[5];
-    if (ivaField && igicField) {
+    const cifField = invoiceValues[7];
+    const nifField = invoiceValues[8];
+    if (ivaField && igicField || (cifField && nifField)) {
       return invoice[0];
     }
     return invoice;
