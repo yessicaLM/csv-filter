@@ -1,56 +1,80 @@
 import { csvFilterCalculator } from '../core/csvFilter';
 
-// Some fields can be empty
-// IVA and IGIC taxes fields are exclusives: --> DONE
-//    both fields with values, invoice not valid
-// CIF and NIF fields are exclusives --> DONE
-//    both fields with values, invoice not valid
-// Total amount is the result of amount + taxes: --> DONE
-//    wrong total amount, invoice not valid
-// Invoice number must be unique
-
 
 describe('CSV filter', () => {
-  const header = 'Invoice_number, Date, Amount, Total_Amount, IVA, IGIC, Concept, CIF_client, NIF_client';  
+  const header = 'Invoice_number, Date, Amount, Total_Amount, IVA, IGIC, Concept, CIF_client, NIF_client';
   const invoice_1 = '1,02/05/2019,1000,1190,19,,ACER Laptop,B76430134,';
-  const invoice_2 = '2,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
-  const invoice_2_with_wrong_number = '1,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
-  const invoiceWithBothTaxes = '1,02/05/2019,1000,1190,19,7,ACER Laptop,B76430134,';
-  const invoiceWithNifAndCif = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,76430134B';
-  const invoiceWithIvaWithWrongTotalAmount  = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,';
-  const invoiceWithIva = '1,02/05/2019,1000,1190,19,,ACER Laptop,B76430134,';
-  const invoiceWithIgicWithWrongTotalAmount = '1,05/05/2019,100,70,,7,TOSHIBA Hard disk,B76430134,';
-  const invoicewithIgic = '1,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
 
   it('only invoice header returns same invoice header', () => {
-    expect(csvFilterCalculator([header])).toEqual(header);
+    const expected = header;
+    const currentValue = [header];
+
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('allows empty fields', () => {
-    expect(csvFilterCalculator([header, invoice_1])).toEqual([header, invoice_1]);
+    const expected = [header, invoice_1];
+    const currentValue = [header, invoice_1];
+
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('IVA and IGIC taxes fields are exclusives', () => {
-    expect(csvFilterCalculator([header, invoiceWithBothTaxes])).toEqual([header]);
+    const invoiceWithBothTaxes = '1,02/05/2019,1000,1190,19,7,ACER Laptop,B76430134,';
+    const expected = [header];
+    const currentValue = [header, invoiceWithBothTaxes];
+
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('CIF and NIF fields are exclusives', () => {
-    expect(csvFilterCalculator([header, invoiceWithNifAndCif])).toEqual([header]);
+    const invoiceWithNifAndCif = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,76430134B';
+    const expected = [header];
+    const currentValue = [header, invoiceWithNifAndCif];
+
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('total amount with IVA is well calculated', () => {
-    expect(csvFilterCalculator([header, invoiceWithIvaWithWrongTotalAmount ])).toEqual([header]);
-    expect(csvFilterCalculator([header, invoiceWithIva])).toEqual([header, invoiceWithIva]);
+    const invoiceWithIva = '1,02/05/2019,1000,1190,19,,ACER Laptop,B76430134,';
+    const invoiceWithIvaWithWrongTotalAmount = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,';
+
+    let expected = [header];
+    let currentValue = [header, invoiceWithIvaWithWrongTotalAmount];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
+
+    expected = [header, invoiceWithIva];
+    currentValue = [header, invoiceWithIva];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('total amount with IGIC is well calculated', () => {
-    expect(csvFilterCalculator([header, invoicewithIgic])).toEqual([header, invoicewithIgic]);
-    expect(csvFilterCalculator([header, invoiceWithIgicWithWrongTotalAmount])).toEqual([header]);
+    const invoicewithIgic = '1,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
+    const invoiceWithIgicWithWrongTotalAmount = '1,05/05/2019,100,70,,7,TOSHIBA Hard disk,B76430134,';
+
+    let expected = [header, invoicewithIgic];
+    let currentValue = [header, invoicewithIgic];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
+
+    expected = [header];
+    currentValue = [header, invoiceWithIgicWithWrongTotalAmount];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 
   it('invoice number must be unique', () => {
-    expect(csvFilterCalculator([header, invoice_1, invoice_2_with_wrong_number])).toEqual([header]);
-    expect(csvFilterCalculator([header, invoice_1, invoice_2_with_wrong_number, invoice_2])).toEqual([header, invoice_2]);
-    expect(csvFilterCalculator([header, invoice_1, invoice_2])).toEqual([header, invoice_1, invoice_2]);
+    const invoice_2 = '2,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
+    const invoice_2_with_wrong_number = '1,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
+
+    let expected = [header];
+    let currentValue = [header, invoice_1, invoice_2_with_wrong_number];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
+
+    expected = [header, invoice_2];
+    currentValue = [header, invoice_1, invoice_2_with_wrong_number, invoice_2];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
+
+    expected = [header, invoice_1, invoice_2];
+    currentValue = [header, invoice_1, invoice_2];
+    expect(csvFilterCalculator(currentValue)).toEqual(expected);
   });
 });
