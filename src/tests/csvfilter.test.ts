@@ -1,3 +1,5 @@
+import { csvFilterCalculator } from '../core/csvFilter';
+
 // Some fields can be empty
 // Invoice number must be unique
 // IVA and IGIC taxes fields are exclusives:
@@ -6,6 +8,7 @@
 //    both fields with values, invoice not valid
 // Total amount is the result of amount + taxes:
 //    wrong total amount, invoice not valid
+
 
 describe('CSV filter', () => {
   const header = 'Invoice_number, Date, Total_Amount, Amount, IVA, IGIC, Concept, CIF_client, NIF_client';  
