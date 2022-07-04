@@ -18,4 +18,8 @@ describe('CSV filter', () => {
   it('only invoice header returns same invoice header', () => {
     expect(csvFilterCalculator([header])).toEqual(header);
   });
+
+  it('allows empty fields', () => {
+    expect(csvFilterCalculator([header, invoice_1])).toEqual([header, invoice_1]);
+  });
 });
