@@ -17,6 +17,8 @@ describe('CSV filter', () => {
   const invoiceWithNifAndCif = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,76430134B';
   const invoiceWithIvaWithWrongTotalAmount  = '1,05/05/2019,100,190,19,,TOSHIBA Hard disk,B76430134,';
   const invoiceWithIva = '1,02/05/2019,1000,1190,19,,ACER Laptop,B76430134,';
+  const invoiceWithIgicWithWrongTotalAmount = '1,05/05/2019,100,70,,7,TOSHIBA Hard disk,B76430134,';
+  const invoicewithIgic = '1,02/05/2019,1000,1070,,7,ACER Laptop,B76430134,';
 
   it('only invoice header returns same invoice header', () => {
     expect(csvFilterCalculator([header])).toEqual(header);
@@ -37,5 +39,10 @@ describe('CSV filter', () => {
   it('total amount with IVA is well calculated', () => {
     expect(csvFilterCalculator([header, invoiceWithIvaWithWrongTotalAmount ])).toEqual(header);
     expect(csvFilterCalculator([header, invoiceWithIva])).toEqual([header, invoiceWithIva]);
+  });
+
+  it('total amount with IGIC is well calculated', () => {
+    expect(csvFilterCalculator([header, invoicewithIgic])).toEqual([header, invoicewithIgic]);
+    expect(csvFilterCalculator([header, invoiceWithIgicWithWrongTotalAmount])).toEqual(header);
   });
 });
